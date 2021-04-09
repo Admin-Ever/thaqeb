@@ -96,7 +96,7 @@
             <div class="row" groups="stock.group_production_lot">
               <div class="col-12 col-md-6 my-2 d-flex align-items-baseline">
                    <i class="fa fa-fw fa-lg fa-calendar mr-3" title="Serial/Lot Number" attrs="{'invisible': ['|',('tracking', '=', 'none'),('picking_code', '!=', 'incoming')]}"/>
-                   <field name="production_date" placeholder="Production Date" attrs="{'invisible': ['|',('picking_type_use_existing_lots', '=', False),('picking_code', '!=', 'incoming')]}"/>
+                   <field name="production_date" placeholder="Production Date" attrs="{'invisible': ['|',('tracking', '=', 'none'),('picking_code', '!=', 'incoming')]}"/>
                </div>
             </div>
 
