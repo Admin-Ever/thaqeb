@@ -1,0 +1,14 @@
+<odoo>
+  <data>
+      <record id="stock_production_lot_inherit" model="ir.ui.view">
+        <field name="name">stock.production.lot.inherit</field>
+        <field name="model">stock.production.lot</field>
+        <field name="inherit_id" ref="product_expiry.view_move_form_expiry"/>
+        <field name="arch" type="xml">
+            <field name = "removal_date" position="after">
+                <field name="production_date"/>
+            </field>
+        </field>
+      </record>
+  </data>
+</odoo>
