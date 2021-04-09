@@ -41,33 +41,32 @@ class StockMove(models.Model):
     _inherit = 'stock.move'
 
     def _action_done(self, cancel_backorder=False):
-        res = super(StockMove, self)._action_done(
-            cancel_backorder=cancel_backorder)
+        res = super(StockMove, self)._action_done(cancel_backorder=cancel_backorder)
         for move in res.filtered(lambda mv: mv.picking_type_id.code == 'incoming'):
-            if self.product_id and self.product_id.use_expiration_date:
-                for mv_line in move.move_line_ids:
+            for mv_line in move.move_line_ids:
+                if mv_line.product_id and mv_line.product_id.use_expiration_date:
                     lot_id = mv_line.lot_id
                     if mv_line.lot_id and mv_line.production_date:
-	                    mapped_fields = {
-	                        'expiration_date': 'expiration_time',
-	                        'use_date': 'use_time',
-	                        'removal_date': 'removal_time',
-	                        'alert_date': 'alert_time'
-	                    }
-	                    lot_vals = dict.fromkeys(mapped_fields, False)
-	                    product = self.env['product.product'].browse(
-	                        mv_line.product_id.id) or self.product_id.id
-	                    if product:
-	                        for field in mapped_fields:
-	                            duration = getattr(product, mapped_fields[field])
-	                            if duration:
-	                                date = mv_line.production_date + \
-	                                    datetime.timedelta(days=duration)
-	                                lot_vals[field] = fields.Datetime.to_string(
-	                                    date)
-	                            lot_vals.update({
-	                                'production_date': mv_line.production_date
-	                            })
-	                            
-	                            lot_id.write(lot_vals)
+                        mapped_fields = {
+                            'expiration_date': 'expiration_time',
+                            'use_date': 'use_time',
+                            'removal_date': 'removal_time',
+                            'alert_date': 'alert_time'
+                        }
+                        lot_vals = dict.fromkeys(mapped_fields, False)
+                        product = self.env['product.product'].browse(
+                            mv_line.product_id.id)
+                        if product:
+                            for field in mapped_fields:
+                                duration = getattr(product, mapped_fields[field])
+                                if duration:
+                                    date = mv_line.production_date + \
+                                        datetime.timedelta(days=duration)
+                                    lot_vals[field] = fields.Datetime.to_string(
+                                        date)
+                                lot_vals.update({
+                                    'production_date': mv_line.production_date
+                                })
+                                
+                                lot_id.write(lot_vals)
         return res
